@@ -8,10 +8,17 @@ library(vegan)
 library(ggplot2)
 library(grid) #We need grid to draw the arrows
 
+abund_table <- read.csv("../../genus-master-absolute.csv", header = TRUE, row.names = 1)
+taxa_table <- read.csv("../../genus-tax-table.csv", header = TRUE, row.names = 1)
+meta_table <- read.csv("../../metadata.csv", header = TRUE, row.names = 1)
+
+abund_table[is.na(abund_table)] <- 0
+
+
 #PARAMETERS ###########################
-which_level="Phylum" #Otus Genus Family Order Class Phylum
-physeq<-import_biom("../../data/VSEARCH/feature_w_tax.biom")
-meta_table<-read.csv("../../data/meta_table.csv",header=T,row.names=1)
+which_level="Genus" #Otus Genus Family Order Class Phylum
+# physeq<-import_biom("../../data/VSEARCH/feature_w_tax.biom")
+# meta_table<-read.csv("../../data/meta_table.csv",header=T,row.names=1)
 text_size=16
 point_size=5
 point_opacity=0.8
@@ -31,11 +38,11 @@ use_provided_colors=FALSE
 colours <- c("#ffa172", "#81fc76", "#68aeff","#c320d8","#2BCE48","#FFCC99","#808080","#94FFB5","#8F7C00","#9DCC00","#C20088","#003380","#FFA405","#FFA8BB","#426600","#FF0010","#5EF1F2","#00998F","#740AFF","#990000","#FFFF00",grey.colors(1000));
 #/PARAMETERS ###########################
 
-abund_table<-otu_table(physeq)
-abund_table<-t(abund_table)
+# abund_table<-otu_table(physeq)
+# abund_table<-t(abund_table)
 #Uncomment if you'd like to get rid of samples below a certain library size
 abund_table<-abund_table[rowSums(abund_table)>=5000,]
-OTU_taxonomy<-as.data.frame(tax_table(physeq))
+OTU_taxonomy<-as.data.frame(taxa_table)
 colnames(OTU_taxonomy)<-c("Kingdom","Phylum","Class","Order","Family","Genus","Otus")
 
 #Ensure that all columns of OTU_taxonomy are character and not factors
@@ -54,7 +61,7 @@ abund_table<-abund_table[,colSums(abund_table)>1]
 OTU_taxonomy<-OTU_taxonomy[colnames(abund_table),]
 
 #get rid of contaminants with "Unassigned", "Chloroplast" and "Mitochondria" assignment", and "non classified" at Phylum level
-abund_table<-abund_table[,!(OTU_taxonomy$Kingdom %in% c("Unassigned") | OTU_taxonomy$Phylum=="" | OTU_taxonomy$Order %in% c("Chloroplast") | OTU_taxonomy$Family %in% c("Mitochondria"))]
+# abund_table<-abund_table[,!(OTU_taxonomy$Kingdom %in% c("Unassigned") | OTU_taxonomy$Phylum=="" | OTU_taxonomy$Order %in% c("Chloroplast") | OTU_taxonomy$Family %in% c("Mitochondria"))]
 
 #extract subset of abund_table for which samples also exists in meta_table
 abund_table<-abund_table[rownames(abund_table) %in% rownames(meta_table),]
@@ -76,11 +83,9 @@ OTU_taxonomy<-OTU_taxonomy[colnames(abund_table),]
 
 # Hypothesis 1
 label="Hypothesis1"
-meta_table<-meta_table[!meta_table$Within_Dam_Sample %in% c("Piezometer"),]
-meta_table$Groups<-as.factor(as.character(meta_table$Within_Dam_Sample))
-meta_table$Type<-as.factor(as.character(meta_table$Sand_Dam))
-meta_table$Type2<-as.character(meta_table$Sample_Time)
-meta_table$Type2<-factor(meta_table$Type2,levels=c("May","July"))
+meta_table$Groups<-as.factor(as.character(meta_table$sweetening.flow))
+meta_table$Type<-as.factor(as.character(meta_table$RUN.WEEK))
+#meta_table$Type2<-as.factor(meta_table$BED)
 meta_table$Connections<-NULL
 
 
@@ -96,17 +101,18 @@ OTU_taxonomy<-OTU_taxonomy[colnames(abund_table),]
 
 #COLLATE OTUS AT A PARTICULAR LEVEL#######################################
 new_abund_table<-NULL
-if(which_level=="Otus"){
-  new_abund_table<-abund_table
-} else {
-  list<-unique(OTU_taxonomy[,which_level])
-  new_abund_table<-NULL
-  for(i in list){
-    tmp<-data.frame(rowSums(abund_table[,rownames(OTU_taxonomy)[OTU_taxonomy[,which_level]==i]]))
-    if(i==""){colnames(tmp)<-c("__Unknowns__")} else {colnames(tmp)<-paste("",i,sep="")}
-    if(is.null(new_abund_table)){new_abund_table<-tmp} else {new_abund_table<-cbind(tmp,new_abund_table)}
-  }
-}
+# if(which_level=="Otus"){
+#   new_abund_table<-abund_table
+# } else {
+#   list<-unique(OTU_taxonomy[,which_level])
+#   new_abund_table<-NULL
+#   for(i in list){
+#     tmp<-data.frame(rowSums(abund_table[,rownames(OTU_taxonomy)[OTU_taxonomy[,which_level]==i]]))
+#     if(i==""){colnames(tmp)<-c("__Unknowns__")} else {colnames(tmp)<-paste("",i,sep="")}
+#     if(is.null(new_abund_table)){new_abund_table<-tmp} else {new_abund_table<-cbind(tmp,new_abund_table)}
+#   }
+# }
+new_abund_table <- abund_table
 
 new_abund_table<-as.data.frame(as(new_abund_table,"matrix"))
 abund_table<-new_abund_table
@@ -279,6 +285,8 @@ if(legends_position_bottom){
 if(exclude_legends){
   p<-p+guides(colour=FALSE)
 }
+
+p <- p + theme(legend.position = "none")
 
 pdf(paste("ANOVA_diversity_",which_level,"_",label,".pdf",sep=""),height=height_image,width=width_image)
 print(p)
