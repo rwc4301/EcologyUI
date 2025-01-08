@@ -1,0 +1,12 @@
+linters: with_defaults(
+  assignment_linter = NULL,           # Disable linting for assignment (`=` vs `<-`)
+  camel_case_linter = NULL,           # Disable camelCase linting
+  spaces_left_parentheses_linter = NULL, # Disable linting for spaces before parentheses
+  object_name_linter = object_name_linter(styles = c("snake_case", "lowerCamelCase")), # Allow specific naming conventions
+  line_length_linter = line_length_linter(length = 120), # Set maximum line length to 120 characters
+  trailing_whitespace_linter = trailing_whitespace_linter() # Keep checking for trailing whitespace
+)
+
+exclusions: list(
+  
+)
