@@ -1,52 +1,47 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createElement } from 'react';
 import './App.css';
 
 function App() {
-  const [plotData, setPlotData] = useState<string | null>(null);
+  const [plotData, setPlotData] = useState<HTMLElement | null>(null);
   const [message, setMessage] = useState<string>("");
   const [bins, setBins] = useState(30);
 
+  // Fetch hello message
   useEffect(() => {
-    // Set up event listeners
-    const helloHandler = (event: CustomEvent) => {
-      setMessage(event.detail.message);
+    const fetchHello = async () => {
+      try {
+        const response = await fetch('http://localhost:3838/hello');
+        console.log(response);
+        const data = await response.json();
+        setMessage(data.message);
+      } catch (error) {
+        console.error('Error fetching hello:', error);
+        setMessage("Error connecting to R server");
+      }
     };
 
-    const plotHandler = (event: CustomEvent) => {
-      setPlotData(event.detail.plotData);
-    };
+    fetchHello();
+  }, []);
 
-    // Add event listeners
-    window.addEventListener('helloResponse', helloHandler as EventListener);
-    window.addEventListener('plotResponse', plotHandler as EventListener);
-
-    // Fetch hello message
-    fetch('http://localhost:3838/', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ getHello: true })
-    });
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('helloResponse', helloHandler as EventListener);
-      window.removeEventListener('plotResponse', plotHandler as EventListener);
-    };
-  }, []); // Empty dependency array means this runs once on mount
-
-  // Fetch new plot when bins change
+  // Fetch plot when bins change
   useEffect(() => {
-    fetch('http://localhost:3838/', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ getPlot: true, bins })
-    });
+    const fetchPlot = async () => {
+      try {
+        const response = await fetch('http://localhost:3838/plot', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ bins })
+        });
+        const data = await response.json();
+        setPlotData(data.plotData);
+      } catch (error) {
+        console.error('Error fetching plot:', error);
+      }
+    };
+
+    fetchPlot();
   }, [bins]);
 
   return (
@@ -71,12 +66,10 @@ function App() {
       </div>
 
       {plotData && (
-        <div className="plot-container">
-          <img 
-            src={`data:image/png;base64,${plotData}`} 
-            alt="R Plot" 
-            style={{ maxWidth: '100%', height: 'auto' }}
-          />
+        <div 
+          className="plot-container"
+          dangerouslySetInnerHTML={{ __html: plotData }}
+        >
         </div>
       )}
     </div>
