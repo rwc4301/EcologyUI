@@ -45,9 +45,7 @@ function App() {
   }, [bins]);
 
   return (
-    <div className="App">
-      <h1>Ecology Analyses</h1>
-      
+    <div className="App">      
       <div className="message">
         {message || "Waiting for R server..."}
       </div>

@@ -31,63 +31,64 @@ import { PlatformMenu } from "./platform-menu";
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
+    name: "example",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "Example Corp.",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
     {
-      name: "Acme Corp.",
+      name: "Example Corp.",
       logo: AudioWaveform,
       plan: "Startup",
     },
     {
-      name: "Evil Corp.",
+      name: "Example Corp.",
       logo: Command,
       plan: "Free",
     },
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Analysis",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Alpha Diversity",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Beta Diversity",
           url: "#",
         },
         {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
+          title: "Core Microbiome",
           url: "#",
         },
         {
-          title: "Explorer",
+          title: "Environmental Filtering",
           url: "#",
         },
         {
-          title: "Quantum",
+          title: "Community Assembly",
+          url: "#",
+        },
+        {
+          title: "Subset Regression",
+          url: "#",
+        },
+        {
+          title: "Differential Expression",
+          url: "#",
+        },
+        {
+          title: "CODA LASSO",
           url: "#",
         },
       ],
@@ -141,17 +142,17 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Example 1",
       url: "#",
       icon: Frame,
     },
     {
-      name: "Sales & Marketing",
+      name: "Example 2",
       url: "#",
       icon: PieChart,
     },
     {
-      name: "Travel",
+      name: "Example 3",
       url: "#",
       icon: Map,
     },
@@ -184,10 +185,10 @@ export function SidebarLayout() {
       </Sidebar>
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-6">
-          <SidebarTrigger />
-          <Separator orientation="vertical" className="h-6" />
+          {/* <SidebarTrigger /> */}
+          {/* <Separator orientation="vertical" className="h-6" /> */}
           <div className="flex items-center gap-5 text-sm">
-            <h2 className="font-semibold">Dashboard</h2>
+            <h2 className="font-semibold">Ecology Analysis</h2>
           </div>
         </header>
         <main className="flex-1 overflow-y-auto">

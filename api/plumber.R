@@ -27,7 +27,7 @@ function(req, res) {
 #* Get a hello message
 #* @get /hello
 function() {
-  list(message = "Hello from R!")
+  list(message = "R Server Connected")
 }
 
 #* Generate a histogram plot
