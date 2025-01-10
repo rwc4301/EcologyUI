@@ -2,12 +2,8 @@ library(fs)
 library(plumber)
 
 run_api <- function() {
-  print("Running API...")
-
   pr <- plumb("plumber.R")
-  pr$run(port = 3838)
-
-  print(paste("API started at ", pr$host, ":", pr$port, sep = ""))
+  pr$run(port = 3839)
 }
 
 watch_files <- function(path, interval = 2) {
@@ -26,4 +22,4 @@ watch_files <- function(path, interval = 2) {
 }
 
 run_api()
-watch_files(".")
+# watch_files(".")

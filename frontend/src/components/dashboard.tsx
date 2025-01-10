@@ -2,6 +2,7 @@ import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, Calendar, CreditCard, BadgeCheck } from 'lucide-react'
 import App from '../App'
+import { HGDPlot } from './HGDPlot'
 
 const data = [
   {
@@ -46,7 +47,8 @@ export function Dashboard() {
           <CardTitle>Alpha Diversity</CardTitle>
         </CardHeader>
         <CardContent className="pl-2">
-          <App />
+          {/* <App /> */}
+          <HGDPlot />
         </CardContent>
       </Card>
     </div>
